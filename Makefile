@@ -5,9 +5,7 @@ build: get verify
 	@echo "Building $(TITLE) to ./bin"
 	go build -o bin/$(TITLE)
 get:
-	env GOPATH=$(CURDIR)
-	env GOBIN=$(CURDIR)/bin 
-	go get 
+	export GOPATH=$(GOPATH)	export GOBIN=$(GOBIN) go get 
 run:
 	go run $(TITLE).go
 start:
