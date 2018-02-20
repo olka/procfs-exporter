@@ -64,7 +64,7 @@ func parseBootTime(btime string) string {
 }
 
 //https://www.kernel.org/doc/Documentation/cpu-freq/user-guide.txt
-func getFrequency(cpuTitle string) int {
+func getFrequency(cpuTitle string) int64 {
 	filename := "/sys/devices/system/cpu/" + cpuTitle + "/cpufreq/"
 	if strings.IndexFunc(cpuTitle, unicode.IsDigit) < 0 {
 		return 0

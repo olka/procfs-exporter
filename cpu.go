@@ -7,7 +7,7 @@ import (
 //CPU stats data structure
 type CPU struct {
 	Title   string
-	Freq    int
+	Freq    int64
 	User    float64
 	Niced   float64
 	System  float64
@@ -25,7 +25,7 @@ func (cpu CPU) Print(totalCPU float64) string {
 
 //Header returns metadata information of @CPU
 func (cpu CPU) Header() string {
-	fields := []string{"_user, ", "_freq, ", "_system, ", "_idle, ", "_wait_io, ", "_irq, ", "_sirq, "}
+	fields := []string{"_freq, ", "_user, ", "_system, ", "_idle, ", "_wait_io, ", "_irq, ", "_sirq, "}
 	var res string
 	for _, val := range fields {
 		if cpu.Title != "" {
