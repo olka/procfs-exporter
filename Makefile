@@ -1,9 +1,10 @@
-TITLE=goproc
+TITLE=procfs-exporter
 GOPATH=$(CURDIR)
 GOBIN=$(CURDIR)/bin
+
 build: get verify
 	@echo "Building $(TITLE) to ./bin"
-	go build -o bin/$(TITLE)
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go build -o bin/$(TITLE) 
 get:
 	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go get
 run:
@@ -11,7 +12,7 @@ run:
 start:
 	@./bin/$(TITLE)
 clean:
-	@rm -f bin/$(TITLE);
+	@rm -rf bin/
 	@rm -rf src/git*
 	@rm -rf pkg
 verify:
