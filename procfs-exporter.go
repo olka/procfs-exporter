@@ -28,6 +28,12 @@ var cpuState [10]CPU
 var deltaCPUState [10]CPU
 var header string
 
+func init() {
+	parseLoadAvg(LoadAvgFileName)
+	parseStat(StatFileName)
+	header = prepareCSVHeader()
+}
+
 func getServerPort() string {
 	port := os.Getenv("SERVER_PORT")
 	if port != "" {
@@ -122,7 +128,7 @@ func prepareCSVHeader() string {
 func ProcHandler(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "text/plain")
 	var result bytes.Buffer
-	result.WriteString(prepareCSVHeader())
+	result.WriteString(header)
 	result.WriteString(parseLoadAvg(LoadAvgFileName))
 	result.WriteString(parseStat(StatFileName))
 	io.WriteString(writer, result.String())

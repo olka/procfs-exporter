@@ -45,7 +45,7 @@ func (cpu CPU) Subtract(other CPU) CPU {
 }
 
 //NewCPU returns CPU instance from string array
-func NewCPU(freq int, statArray []string, i int) CPU {
+func NewCPU(freq int64, statArray []string, i int) CPU {
 	cpu := CPU{}
 	cpu.Title = statArray[i]
 	cpu.Freq = freq
