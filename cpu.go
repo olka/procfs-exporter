@@ -19,8 +19,8 @@ type CPU struct {
 }
 
 //Print returns string representation of @CPU
-func (cpu CPU) Print(totalCPU float64) string {
-	return fmt.Sprintf("%v, %.2f%%, %.2f%%, %.2f%%, %.2f%%, %.2f%%, %.2f%%, ", cpu.Freq, ((cpu.User+cpu.Niced)*100)/totalCPU, (cpu.System*100)/totalCPU, (cpu.Idle*100)/totalCPU, (cpu.WaitIO*100)/totalCPU, (cpu.IRQ*100)/totalCPU, (cpu.SoftIRQ*100)/totalCPU)
+func (cpu CPU) Print() string {
+	return fmt.Sprintf("%v, %.2f%%, %.2f%%, %.2f%%, %.2f%%, %.2f%%, %.2f%%, ", cpu.Freq, ((cpu.User+cpu.Niced)*100)/cpu.Total, (cpu.System*100)/cpu.Total, (cpu.Idle*100)/cpu.Total, (cpu.WaitIO*100)/cpu.Total, (cpu.IRQ*100)/cpu.Total, (cpu.SoftIRQ*100)/cpu.Total)
 }
 
 //Header returns metadata information of @CPU
@@ -39,7 +39,7 @@ func (cpu CPU) Header() string {
 
 //Subtract values of one @CPU from another
 func (cpu CPU) Subtract(other CPU) CPU {
-	return CPU{cpu.Title, (cpu.Freq - other.Freq), (cpu.User - other.User), (cpu.Niced - other.Niced),
+	return CPU{cpu.Title, cpu.Freq, (cpu.User - other.User), (cpu.Niced - other.Niced),
 		(cpu.System - other.System), (cpu.Idle - other.Idle), (cpu.WaitIO - other.WaitIO),
 		(cpu.IRQ - other.IRQ), (cpu.SoftIRQ - other.SoftIRQ), (cpu.Total - other.Total)}
 }

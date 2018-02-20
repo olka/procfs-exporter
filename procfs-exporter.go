@@ -24,14 +24,27 @@ const LoadAvgFileName = "/proc/loadavg"
 //StatFileName file name for stat metrics
 const StatFileName = "/proc/stat"
 
+//CPUFreqFileName represents path to file with current CPU frequency
+var CPUFreqFileName string
+
 var cpuState [10]CPU
-var deltaCPUState [10]CPU
 var header string
 
 func init() {
-	parseLoadAvg(LoadAvgFileName)
+	getFrequencyFileName := func(cpuTitle string) string {
+		prefix := "/sys/devices/system/cpu/" + cpuTitle + "/cpufreq/"
+		if _, err := os.Stat(prefix + "scaling_cur_freq"); err == nil {
+			return prefix + "scaling_cur_freq"
+		}
+		if _, err := os.Stat(prefix + "cpuinfo_cur_freq"); err == nil {
+			return prefix + "cpuinfo_cur_freq"
+		}
+		return ""
+	}
+
 	parseStat(StatFileName)
 	header = prepareCSVHeader()
+	CPUFreqFileName = getFrequencyFileName(cpuState[1].Title)
 }
 
 func getServerPort() string {
@@ -71,15 +84,8 @@ func parseBootTime(btime string) string {
 
 //https://www.kernel.org/doc/Documentation/cpu-freq/user-guide.txt
 func getFrequency(cpuTitle string) int64 {
-	filename := "/sys/devices/system/cpu/" + cpuTitle + "/cpufreq/"
-	if strings.IndexFunc(cpuTitle, unicode.IsDigit) < 0 {
-		return 0
-	}
-	if _, err := os.Stat(filename + "scaling_cur_freq"); err == nil {
-		return parseInt(getFileContent(filename + "scaling_cur_freq"))
-	}
-	if _, err := os.Stat(filename + "cpuinfo_cur_freq"); err == nil {
-		return parseInt(getFileContent(filename + "cpuinfo_cur_freq"))
+	if CPUFreqFileName != "" {
+		return parseInt(getFileContent(CPUFreqFileName))
 	}
 	return 0
 }
@@ -89,23 +95,23 @@ func parseStat(statFileName string) string {
 	var result []string
 	statArray := strings.FieldsFunc(stat, unicode.IsSpace)
 
-	for i, val := range statArray {
+	for i, statEntry := range statArray {
 		switch {
-		case strings.HasPrefix(val, "cpu"):
-			freq := getFrequency(val)
+		case strings.HasPrefix(statEntry, "cpu"):
+			freq := getFrequency(statEntry)
 			j := i / 11 //count of cpu related elements on one line: http://man7.org/linux/man-pages/man5/proc.5.html
-			deltaCPUState[j] = NewCPU(freq, statArray, i).Subtract(cpuState[j])
-			result = append(result, deltaCPUState[j].Print(deltaCPUState[j].Total))
-			cpuState[j] = NewCPU(freq, statArray, i)
-		case val == "ctxt":
+			cpuCurrentVal := NewCPU(freq, statArray, i)
+			result = append(result, cpuCurrentVal.Subtract(cpuState[j]).Print())
+			cpuState[j] = cpuCurrentVal
+		case statEntry == "ctxt":
 			result = append(result, statArray[i+1])
-		case val == "btime":
+		case statEntry == "btime":
 			result = append(result, ", "+parseBootTime(statArray[i+1]))
-		case val == "processes":
+		case statEntry == "processes":
 			result = append(result, ", "+statArray[i+1])
-		case val == "procs_blocked":
+		case statEntry == "procs_blocked":
 			result = append(result, ", "+statArray[i+1])
-		case val == "softirq":
+		case statEntry == "softirq":
 			result = append(result, ", "+NewSoftIRQ(statArray[i:]).Print())
 		}
 	}
