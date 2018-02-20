@@ -20,7 +20,7 @@ type CPU struct {
 
 //Print returns string representation of @CPU
 func (cpu CPU) Print(totalCPU float64) string {
-	return fmt.Sprintf("%.2f%%, %.2f%%, %.2f%%, %.2f%%, %.2f%%, %.2f%%, ", ((cpu.User+cpu.Niced)*100)/totalCPU, (cpu.System*100)/totalCPU, (cpu.Idle*100)/totalCPU, (cpu.WaitIO*100)/totalCPU, (cpu.IRQ*100)/totalCPU, (cpu.SoftIRQ*100)/totalCPU)
+	return fmt.Sprintf("%v, %.2f%%, %.2f%%, %.2f%%, %.2f%%, %.2f%%, %.2f%%, ", cpu.Freq, ((cpu.User+cpu.Niced)*100)/totalCPU, (cpu.System*100)/totalCPU, (cpu.Idle*100)/totalCPU, (cpu.WaitIO*100)/totalCPU, (cpu.IRQ*100)/totalCPU, (cpu.SoftIRQ*100)/totalCPU)
 }
 
 //Header returns metadata information of @CPU
