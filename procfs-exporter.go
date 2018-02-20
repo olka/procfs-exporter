@@ -41,7 +41,7 @@ func getFileContent(fileName string) string {
 	if err != nil {
 		panic(err)
 	}
-	return string(res)
+	return strings.TrimSpace(string(res))
 }
 
 func parseLoadAvg(loadAvgFileName string) string {
