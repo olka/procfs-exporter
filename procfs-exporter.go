@@ -22,7 +22,7 @@ const DefaultPort = "9100"
 const LoadAvgFileName = "/proc/loadavg"
 
 //StatFileName file name for stat metrics
-const StatFileName = "/proc/stat"
+var StatFileName = "/proc/stat"
 
 //CPUFreqFileName represents path to file with current CPU frequency
 var CPUFreqFileName string
@@ -30,7 +30,7 @@ var CPUFreqFileName string
 var cpuState [10]CPU
 var header string
 
-func init() {
+func initialize() {
 	getFrequencyFileName := func(cpuTitle string) string {
 		prefix := "/sys/devices/system/cpu/" + cpuTitle + "/cpufreq/"
 		if _, err := os.Stat(prefix + "scaling_cur_freq"); err == nil {
@@ -142,9 +142,9 @@ func ProcHandler(writer http.ResponseWriter, request *http.Request) {
 
 func main() {
 	log.Println("Starting proc agent on port " + getServerPort())
-
+	initialize()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`Use /metrics url to see host metrics`))
+		w.Write([]byte(`Use /metrics url for host metrics`))
 	})
 	http.Handle("/metrics", gziphandler.GzipHandler(http.HandlerFunc(ProcHandler)))
 

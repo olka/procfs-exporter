@@ -6,6 +6,9 @@ import (
 	"testing"
 )
 
+func init() {
+	StatFileName = "test/stat"
+}
 func TestLoadAvg(t *testing.T) {
 	expectedResult := "0.00 0.01 0.00 1/198 3417"
 	actualResult := getFileContent("test/loadavg")
@@ -54,6 +57,7 @@ func TestStat(t *testing.T) {
 		)
 	}
 }
+
 func TestMissingFile(t *testing.T) {
 	func() {
 		defer func() {
