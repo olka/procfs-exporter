@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/olka/proc-metrics-exporter.svg?branch=master)](https://travis-ci.org/olka/proc-metrics-exporter)
+[![Build Status](https://travis-ci.org/olka/procfs-exporter.svg?branch=master)](https://travis-ci.org/olka/procfs-exporter)
 
 Basic procfs exporter (/proc/stat /proc/loadavg) exposed on 9100 port
 
